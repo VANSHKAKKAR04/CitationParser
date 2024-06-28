@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Citation Parser</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .form-container {
+        display: none;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 p-8">
+    <div
+      class="py-1 flex items-center px-4 space-x-4 bg-indigo-500 fixed top-0 left-0 border-b transition-all duration-150 h-[10vh] w-full"
+    >
+      <img class="h-[7.5vh]" src="/static/logo-white.svg" />
+    </div>
+    <div class="md:flex w-full md:space-y-0 space-y-8 justify-around mt-[10vh]">
+      <div class="rounded-lg min-w-[35dvw]">
+        <h1 class="text-2xl font-bold mb-6">Upload or Paste Citation</h1>
+        <form
+          id="uploadForm"
+          enctype="multipart/form-data"
+          class="space-y-4 bg-gray-50 p-4 rounded-lg shadow-md"
+        >
+          <div>
+            <label for="option" class="block text-sm font-medium text-gray-700"
+              >Select :</label
+            >
+            <select
+              id="formSelector"
+              name="formSelector"
+              onchange="showForm()"
+              class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              required
+            >
+              <option value="none">Select Form</option>
+              <option value="journalForm">Journal</option>
+              <option value="conferenceForm">Conference</option>
+              <option value="chapterForm">Chapter</option>
+              <option value="bookForm">Book</option>
+              <option value="projectForm">Project</option>
+              <option value="patentForm">Patent</option>
+            </select>
+          </div>
+          <div>
+            <label
+              for="fileType"
+              class="block text-sm font-medium text-gray-700"
+              >Select Citation Format:</label
+            >
+            <select
+              id="fileType"
+              name="fileType"
+              class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              required
+            >
+              <option value="bibtex">BibTeX</option>
+              <option value="ris">RIS</option>
+              <option value="apa">APA</option>
+              <option value="mla">MLA</option>
+              <option value="harvard">Harvard</option>
+              <option value="chicago">Chicago</option>
+              <option value="vancouver">Vancouver</option>
+              <option value="plaintext">PlainText</option>
+            </select>
+          </div>
+          <div>
+            <label for="file" class="block text-sm font-medium text-gray-700"
+              >Upload File:</label
+            >
+            <input
+              type="file"
+              id="file"
+              name="file"
+              accept="*"
+              class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+            />
+          </div>
+          <div>
+            <label for="content" class="block text-sm font-medium text-gray-700"
+              >Or Paste Content:</label
+            >
+            <textarea
+              id="content"
+              name="content"
+              rows="10"
+              class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            ></textarea>
+          </div>
+          <div class="text-center">
+            <button
+              type="submit"
+              class="inline-flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              Enter
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="rounded-lg min-w-[40dvw]">
+        <h1 class="text-2xl font-bold mb-6">Parsed Details</h1>
+
+        <div id="journalForm" class="form-container">
+          <form class="space-y-4 bg-gray-50 p-4 rounded-lg shadow-md">
+            <div class="flex flex-col">
+              <label
+                for="journalAuthors"
+                class="block text-sm font-medium text-gray-700"
+                >Authors</label
+              >
+              <input
+                type="text"
+                id="journalAuthors"
+                name="journalAuthors"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="journalTitle"
+                class="block text-sm font-medium text-gray-700"
+                >Title of the Article</label
+              >
+              <input
+                type="text"
+                id="journalTitle"
+                name="journalTitle"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="journalName"
+                class="block text-sm font-medium text-gray-700"
+                >Journal Name</label
+              >
+              <input
+                type="text"
+                id="journalName"
+                name="journalName"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="journalVolumeIssue"
+                class="block text-sm font-medium text-gray-700"
+                >Volume</label
+              >
+              <input
+                type="text"
+                id="journalVolumeIssue"
+                name="journalVolumeIssue"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="journalIssueNumber"
+                class="block text-sm font-medium text-gray-700"
+                >Issue Number</label
+              >
+              <input
+                type="text"
+                id="journalIssueNumber"
+                name="journalIssueNumber"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="journalPages"
+                class="block text-sm font-medium text-gray-700"
+                >Page Numbers</label
+              >
+              <input
+                type="text"
+                id="journalPages"
+                name="journalPages"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="journalPublicationDate"
+                class="block text-sm font-medium text-gray-700"
+                >Publication Year</label
+              >
+              <input
+                type="text"
+                id="journalPublicationDate"
+                name="journalPublicationDate"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="journalDOI"
+                class="block text-sm font-medium text-gray-700"
+                >DOI</label
+              >
+              <input
+                type="text"
+                id="journalDOI"
+                name="journalDOI"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="text-center">
+              <button
+                type="submit"
+                class="inline-flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+        <div id="conferenceForm" class="form-container">
+          <form class="space-y-4 bg-gray-50 p-4 rounded-lg shadow-md">
+            <div class="flex flex-col">
+              <label
+                for="conferenceAuthors"
+                class="block text-sm font-medium text-gray-700"
+                >Authors</label
+              >
+              <input
+                type="text"
+                id="conferenceAuthors"
+                name="conferenceAuthors"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="conferenceTitle"
+                class="block text-sm font-medium text-gray-700"
+                >Title of the Paper</label
+              >
+              <input
+                type="text"
+                id="conferenceTitle"
+                name="conferenceTitle"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="conferenceName"
+                class="block text-sm font-medium text-gray-700"
+                >Conference Name</label
+              >
+              <input
+                type="text"
+                id="conferenceName"
+                name="conferenceName"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="conferenceLocation"
+                class="block text-sm font-medium text-gray-700"
+                >Location</label
+              >
+              <input
+                type="text"
+                id="conferenceLocation"
+                name="conferenceLocation"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="conferenceDate"
+                class="block text-sm font-medium text-gray-700"
+                >Date</label
+              >
+              <input
+                type="text"
+                id="conferenceDate"
+                name="conferenceDate"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="conferenceProceedings"
+                class="block text-sm font-medium text-gray-700"
+                >Proceedings Title</label
+              >
+              <input
+                type="text"
+                id="conferenceProceedings"
+                name="conferenceProceedings"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="conferencePages"
+                class="block text-sm font-medium text-gray-700"
+                >Page Numbers</label
+              >
+              <input
+                type="text"
+                id="conferencePages"
+                name="conferencePages"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="conferenceDOI"
+                class="block text-sm font-medium text-gray-700"
+                >DOI</label
+              >
+              <input
+                type="text"
+                id="conferenceDOI"
+                name="conferenceDOI"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="text-center">
+              <button
+                type="submit"
+                class="inline-flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+        <div id="chapterForm" class="form-container">
+          <form class="space-y-4 bg-gray-50 p-4 rounded-lg shadow-md">
+            <div class="flex flex-col">
+              <label
+                for="chapterAuthors"
+                class="block text-sm font-medium text-gray-700"
+                >Authors</label
+              >
+              <input
+                type="text"
+                id="chapterAuthors"
+                name="chapterAuthors"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="chapterTitle"
+                class="block text-sm font-medium text-gray-700"
+                >Title of the Chapter</label
+              >
+              <input
+                type="text"
+                id="chapterTitle"
+                name="chapterTitle"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="bookTitle"
+                class="block text-sm font-medium text-gray-700"
+                >Title of the Book</label
+              >
+              <input
+                type="text"
+                id="bookTitle"
+                name="bookTitle"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="bookEditors"
+                class="block text-sm font-medium text-gray-700"
+                >Editors</label
+              >
+              <input
+                type="text"
+                id="bookEditors"
+                name="bookEditors"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="chapterPages"
+                class="block text-sm font-medium text-gray-700"
+                >Page Numbers</label
+              >
+              <input
+                type="text"
+                id="chapterPages"
+                name="chapterPages"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="chapterYear"
+                class="block text-sm font-medium text-gray-700"
+                >Year of Publication</label
+              >
+              <input
+                type="text"
+                id="chapterYear"
+                name="chapterYear"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="text-center">
+              <button
+                type="submit"
+                class="inline-flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+        <div id="bookForm" class="form-container">
+          <form class="space-y-4 bg-gray-50 p-4 rounded-lg shadow-md">
+            <div class="flex flex-col">
+              <label
+                for="bookAuthors"
+                class="block text-sm font-medium text-gray-700"
+                >Authors</label
+              >
+              <input
+                type="text"
+                id="bookAuthors"
+                name="bookAuthors"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="bookTitle"
+                class="block text-sm font-medium text-gray-700"
+                >Title of the Book</label
+              >
+              <input
+                type="text"
+                id="bookTitle"
+                name="bookTitle"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="bookPublisher"
+                class="block text-sm font-medium text-gray-700"
+                >Publisher</label
+              >
+              <input
+                type="text"
+                id="bookPublisher"
+                name="bookPublisher"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="bookYear"
+                class="block text-sm font-medium text-gray-700"
+                >Year of Publication</label
+              >
+              <input
+                type="text"
+                id="bookYear"
+                name="bookYear"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="bookISBN"
+                class="block text-sm font-medium text-gray-700"
+                >ISBN</label
+              >
+              <input
+                type="text"
+                id="bookISBN"
+                name="bookISBN"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="text-center">
+              <button
+                type="submit"
+                class="inline-flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+        <div id="projectForm" class="form-container">
+          <form class="space-y-4 bg-gray-50 p-4 rounded-lg shadow-md">
+            <div class="flex flex-col">
+              <label
+                for="projectTitle"
+                class="block text-sm font-medium text-gray-700"
+                >Title of the Project</label
+              >
+              <input
+                type="text"
+                id="projectTitle"
+                name="projectTitle"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="projectAuthors"
+                class="block text-sm font-medium text-gray-700"
+                >Authors</label
+              >
+              <input
+                type="text"
+                id="projectAuthors"
+                name="projectAuthors"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="projectStartDate"
+                class="block text-sm font-medium text-gray-700"
+                >Start Date</label
+              >
+              <input
+                type="date"
+                id="projectStartDate"
+                name="projectStartDate"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="projectEndDate"
+                class="block text-sm font-medium text-gray-700"
+                >End Date</label
+              >
+              <input
+                type="date"
+                id="projectEndDate"
+                name="projectEndDate"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="projectFunding"
+                class="block text-sm font-medium text-gray-700"
+                >Funding Amount</label
+              >
+              <input
+                type="number"
+                id="projectFunding"
+                name="projectFunding"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="projectSponsor"
+                class="block text-sm font-medium text-gray-700"
+                >Sponsor</label
+              >
+              <input
+                type="text"
+                id="projectSponsor"
+                name="projectSponsor"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="text-center">
+              <button
+                type="submit"
+                class="inline-flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+        <div id="patentForm" class="form-container">
+          <form class="space-y-4 bg-gray-50 p-4 rounded-lg shadow-md">
+            <div class="flex flex-col">
+              <label
+                for="patentInventors"
+                class="block text-sm font-medium text-gray-700"
+                >Inventors</label
+              >
+              <input
+                type="text"
+                id="patentInventors"
+                name="patentInventors"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="patentTitle"
+                class="block text-sm font-medium text-gray-700"
+                >Title of the Patent</label
+              >
+              <input
+                type="text"
+                id="patentTitle"
+                name="patentTitle"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="patentNumber"
+                class="block text-sm font-medium text-gray-700"
+                >Patent Number</label
+              >
+              <input
+                type="text"
+                id="patentNumber"
+                name="patentNumber"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="patentFilingDate"
+                class="block text-sm font-medium text-gray-700"
+                >Filing Date</label
+              >
+              <input
+                type="date"
+                id="patentFilingDate"
+                name="patentFilingDate"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="patentPublicationDate"
+                class="block text-sm font-medium text-gray-700"
+                >Publication Date</label
+              >
+              <input
+                type="date"
+                id="patentPublicationDate"
+                name="patentPublicationDate"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="patentAssignee"
+                class="block text-sm font-medium text-gray-700"
+                >Assignee</label
+              >
+              <input
+                type="text"
+                id="patentAssignee"
+                name="patentAssignee"
+                class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div class="text-center">
+              <button
+                type="submit"
+                class="inline-flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="py-4 flex items-center justify-center mx-12 fixed bottom-0 left-0 border-b w-full border-t"
+    >
+      &copy;www.iqac/nsut.ac.org
+    </div>
+    <script>
+      function showForm() {
+        var selector = document.getElementById("formSelector");
+        var selectedForm = selector.value;
+
+        // Hide all forms
+        var forms = document.getElementsByClassName("form-container");
+        for (var i = 0; i < forms.length; i++) {
+          forms[i].style.display = "none";
+        }
+
+        // Show the selected form
+        if (selectedForm !== "none") {
+          document.getElementById(selectedForm).style.display = "block";
+        }
+      }
+
+      document
+        .getElementById("uploadForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+          const formData = new FormData(this);
+
+          try {
+            const response = await fetch("/upload", {
+              method: "POST",
+              body: formData,
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              document.getElementById("journalAuthors").value =
+                data.author || "";
+              document.getElementById("journalTitle").value = data.title || "";
+              document.getElementById("journalName").value = data.journal || "";
+              document.getElementById("journalVolumeIssue").value =
+                data.volume || "";
+              document.getElementById("journalIssueNumber").value =
+                data.number || "";
+              document.getElementById("journalPages").value = data.pages || "";
+              document.getElementById("journalPublicationDate").value =
+                data.year || "";
+              document.getElementById("journalDOI").value = data.doi || "";
+            } else {
+              document.getElementById(
+                "journalForm"
+              ).innerHTML = `<p class="text-sm text-red-500">${data.error}</p>`;
+            }
+          } catch (error) {
+            document.getElementById(
+              "journalForm"
+            ).innerHTML = `<p class="text-sm text-red-500">An error occurred: ${error.message}</p>`;
+          }
+        });
+    </script>
+  </body>
+</html>
